@@ -49,7 +49,7 @@ class UserController extends Controller
      */
     public function update(UserRequest $request, User $user): UserResource|JsonResponse
     {
-        $data = $request->validated();
+        $data = array_filter($request->validated(), fn ($v) => $v !== null);
 
         if ($user->is(auth()->user()) && (
             (isset($data['role']) && $data['role'] !== $user->role->value) || ($data['is_active'] ?? true) === false
