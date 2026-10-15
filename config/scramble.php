@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 use Dedoc\Scramble\Http\Middleware\RestrictedDocsAccess;
 
@@ -14,8 +14,8 @@ return [
      * Without *, patterns match path segments (api matches api and api/users, not apiary).
      * With *, Str::is is used (e.g. api/v*).
      *
-     * One static include → default server is /{include} and paths are stripped (/users).
-     * Multiple includes or wildcards → server defaults to / and paths stay full (/api/users).
+     * One static include â†’ default server is /{include} and paths are stripped (/users).
+     * Multiple includes or wildcards â†’ server defaults to / and paths stay full (/api/users).
      * Override with `servers`, or use Scramble::registerApi() for separate bases.
      */
     'api_path' => 'api',
@@ -50,16 +50,36 @@ return [
         /*
          * API version.
          */
-        'version' => env('API_VERSION', '0.0.1'),
+        'version' => env('API_VERSION', '1.0.0'),
 
         /*
          * Description rendered on the home page of the API documentation (`/docs/api`).
          */
-        'description' => '',
+        'description' => <<<'MD'
+API REST de gestion de **devis et factures** : clients, articles, génération PDF, statuts, numérotation automatique, export CSV.
+
+## Authentification
+Toutes les routes (sauf POST /api/v1/auth/login) exigent un jeton **Bearer** (Laravel Sanctum) :
+
+1. `POST /api/v1/auth/login` avec `email` et `password` → `token`
+2. Envoyer `Authorization: Bearer <token>` sur chaque requête.
+
+## Rôles et permissions
+| Rôle | Droits |
+|---|---|
+| `admin` | Tout, y compris la gestion des utilisateurs |
+| `manager` | Clients, articles, devis/factures (création, envoi, suppression de brouillons), export |
+| `accountant` | Lecture, changement de statut (envoyé / payé), export |
+
+Un accès refusé renvoie `403`. Les règles métier violées (ex. modifier une facture envoyée) renvoient `422`.
+
+## Comptes de démonstration
+Mot de passe `Password123` : `admin@example.com`, `manager@example.com`, `comptable@example.com`.
+MD,
     ],
 
     'ui' => [
-        'title' => null,
+        'title' => 'Devis & Factures API',
     ],
 
     /*
@@ -120,8 +140,8 @@ return [
     /**
      * Determines how Scramble stores the descriptions of enum cases.
      * Available options:
-     * - 'description' – Case descriptions are stored as the enum schema's description using table formatting.
-     * - 'extension' – Case descriptions are stored in the `x-enumDescriptions` enum schema extension.
+     * - 'description' â€“ Case descriptions are stored as the enum schema's description using table formatting.
+     * - 'extension' â€“ Case descriptions are stored in the `x-enumDescriptions` enum schema extension.
      *
      *    @see https://redocly.com/docs-legacy/api-reference-docs/specification-extensions/x-enum-descriptions
      * - false - Case descriptions are ignored.
@@ -131,7 +151,7 @@ return [
     /**
      * Determines how Scramble stores the names of enum cases.
      * Available options:
-     * - 'names' – Case names are stored in the `x-enumNames` enum schema extension.
+     * - 'names' â€“ Case names are stored in the `x-enumNames` enum schema extension.
      * - 'varnames' - Case names are stored in the `x-enum-varnames` enum schema extension.
      * - false - Case names are not stored.
      */
@@ -183,5 +203,7 @@ return [
      * ],
      */
     // 'security_strategy' => \Dedoc\Scramble\SecurityDocumentation\MiddlewareAuthSecurityStrategy::class,
-    'security_strategy' => null,
+    'security_strategy' => \Dedoc\Scramble\SecurityDocumentation\MiddlewareAuthSecurityStrategy::class,
 ];
+
+
