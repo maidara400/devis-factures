@@ -1,0 +1,28 @@
+<?php
+
+namespace App\Http\Resources;
+
+use App\Models\DocumentLine;
+use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\JsonResource;
+
+/**
+ * @mixin DocumentLine
+ */
+class DocumentLineResource extends JsonResource
+{
+    public function toArray(Request $request): array
+    {
+        return [
+            'id' => $this->id,
+            'article_id' => $this->article_id,
+            'position' => $this->position,
+            'description' => $this->description,
+            'quantity' => $this->quantity,
+            'unit_price' => $this->unit_price,
+            'tax_rate' => $this->tax_rate,
+            'subtotal' => $this->subtotal,
+            'tax_amount' => $this->tax_amount,
+        ];
+    }
+}

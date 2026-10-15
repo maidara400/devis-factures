@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\V1\ArticleController;
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\ClientController;
+use App\Http\Controllers\Api\V1\DocumentController;
 use App\Http\Controllers\Api\V1\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -20,5 +21,19 @@ Route::prefix('v1')->group(function () {
 
         Route::apiResource('articles', ArticleController::class)->only(['index', 'show'])->middleware('can:articles.view');
         Route::apiResource('articles', ArticleController::class)->except(['index', 'show'])->middleware('can:articles.manage');
+
+        Route::middleware('can:documents.view')->group(function () {
+            Route::get('documents', [DocumentController::class, 'index']);
+            Route::get('documents/{document}', [DocumentController::class, 'show']);
+            Route::get('documents/{document}/pdf', [DocumentController::class, 'pdf']);
+        });
+        Route::middleware('can:documents.manage')->group(function () {
+            Route::post('documents', [DocumentController::class, 'store']);
+            Route::put('documents/{document}', [DocumentController::class, 'update']);
+            Route::post('documents/{document}/convert-to-invoice', [DocumentController::class, 'convertToInvoice']);
+            Route::post('documents/{document}/send', [DocumentController::class, 'send']);
+        });
+        Route::patch('documents/{document}/status', [DocumentController::class, 'updateStatus'])->middleware('can:documents.status');
+        Route::delete('documents/{document}', [DocumentController::class, 'destroy'])->middleware('can:documents.delete');
     });
 });
