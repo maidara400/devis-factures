@@ -2,7 +2,7 @@
 
 Application **Laravel 12** de gestion de devis et de factures : clients, catalogue d'articles, génération de **PDF**, workflow de statuts (brouillon → envoyé → payé), **numérotation automatique**, **export CSV**, envoi par e-mail via **file d'attente**, **rôles et permissions**, interface web moderne et **API REST versionnée et documentée (OpenAPI)**.
 
-[![CI](https://github.com/maidara400/devis-factures/actions/workflows/ci.yml/badge.svg)](https://github.com/maidara400/devis-factures/actions/workflows/ci.yml)
+![Laravel 12](https://img.shields.io/badge/Laravel-12-FF2D20?logo=laravel&logoColor=white) ![PHP 8.2+](https://img.shields.io/badge/PHP-8.2%2B-777BB4?logo=php&logoColor=white) ![Tests](https://img.shields.io/badge/tests-43%20passed-brightgreen)
 
 ## Fonctionnalités
 
@@ -140,6 +140,8 @@ php artisan test
 ```
 
 43 tests (unitaires et fonctionnels) couvrant l'authentification, les permissions, la numérotation, le rollback transactionnel, les transitions de statut, la conversion, le PDF, les jobs, l'export CSV, l'API et l'interface web.
+
+Un modèle de pipeline GitHub Actions est fourni dans [`docs/github-actions-ci.yml`](docs/github-actions-ci.yml) : copiez-le dans `.github/workflows/ci.yml` pour exécuter les tests à chaque push.
 
 ## Architecture
 
