@@ -12,7 +12,7 @@
                    subtitle="Le numéro est attribué automatiquement à l'enregistrement." />
 
     @if($errors->any())
-        <div class="mb-6 rounded-xl border border-rose-200 bg-rose-50 p-4 text-sm text-rose-800 dark:border-rose-500/20 dark:bg-rose-500/10 dark:text-rose-300">
+        <div class="mb-6 rounded-md border border-rose-200 bg-rose-50 p-4 text-sm text-rose-800 dark:border-rose-500/20 dark:bg-rose-500/10 dark:text-rose-300">
             <p class="font-semibold">Veuillez corriger les erreurs suivantes :</p>
             <ul class="mt-1 list-inside list-disc">@foreach($errors->all() as $e)<li>{{ $e }}</li>@endforeach</ul>
         </div>
@@ -33,7 +33,7 @@
 
                 <div class="space-y-4">
                     <template x-for="(line, i) in lines" :key="line.key">
-                        <div class="relative rounded-xl border border-slate-200 bg-slate-50/60 p-4 dark:border-white/10 dark:bg-white/[0.02]">
+                        <div class="relative rounded-md border border-slate-200 bg-slate-50/60 p-4 dark:border-white/10 dark:bg-white/[0.02]">
                             <div class="grid gap-3 sm:grid-cols-12">
                                 <div class="sm:col-span-12">
                                     <label class="label">Article (optionnel)</label>
@@ -63,7 +63,7 @@
                                 <div class="flex items-end justify-between gap-2 sm:col-span-3">
                                     <div class="text-right">
                                         <p class="label !mb-0">Total HT</p>
-                                        <p class="text-sm font-bold tabular-nums" x-text="money(lineSubtotal(line))"></p>
+                                        <p class="text-sm font-semibold tabular-nums" x-text="money(lineSubtotal(line))"></p>
                                     </div>
                                     <button type="button" @click="remove(i)" :disabled="lines.length === 1" class="btn-danger !p-2.5" aria-label="Supprimer la ligne"><x-icon name="trash" class="size-4" /></button>
                                 </div>
@@ -96,14 +96,13 @@
                 <x-input :label="$document->type->value === 'quote' ? 'Valable jusqu\'au' : 'Échéance de paiement'" name="due_date" type="date" :value="$document->due_date?->toDateString()" />
             </div>
 
-            <div class="card relative overflow-hidden p-6">
-                <div class="absolute inset-0 -z-0 bg-gradient-to-br from-brand-600 to-violet-700"></div>
-                <div class="relative space-y-2.5 text-white">
-                    <div class="flex justify-between text-sm text-brand-100"><span>Total HT</span><span class="tabular-nums" x-text="money(subtotal)"></span></div>
-                    <div class="flex justify-between text-sm text-brand-100"><span>TVA</span><span class="tabular-nums" x-text="money(tax)"></span></div>
-                    <div class="flex items-baseline justify-between border-t border-white/20 pt-3">
-                        <span class="text-sm font-semibold">Total TTC</span>
-                        <span class="text-2xl font-bold tabular-nums" x-text="money(total)"></span>
+            <div class="card p-6">
+                <div class="space-y-2.5">
+                    <div class="flex justify-between text-sm text-slate-600"><span>Total HT</span><span class="tabular-nums" x-text="money(subtotal)"></span></div>
+                    <div class="flex justify-between text-sm text-slate-600"><span>TVA</span><span class="tabular-nums" x-text="money(tax)"></span></div>
+                    <div class="flex items-baseline justify-between border-t border-slate-200 pt-3">
+                        <span class="text-sm font-semibold text-slate-900">Total TTC</span>
+                        <span class="text-xl font-semibold tabular-nums text-slate-900" x-text="money(total)"></span>
                     </div>
                 </div>
             </div>

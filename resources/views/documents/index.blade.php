@@ -17,10 +17,10 @@
 
     <div class="card overflow-hidden">
         <div class="flex flex-wrap items-center gap-3 border-b border-slate-100 p-4 dark:border-white/5">
-            <div class="flex rounded-xl bg-slate-100 p-1 dark:bg-white/5">
+            <div class="flex rounded-md bg-slate-100 p-1 dark:bg-white/5">
                 @foreach($tabs as $value => $label)
                     <a href="{{ $qs(['type' => $value]) }}"
-                       class="rounded-lg px-4 py-1.5 text-sm font-semibold transition {{ ($filters['type'] ?? '') === (string) $value ? 'bg-white text-brand-700 shadow-sm dark:bg-slate-800 dark:text-brand-300' : 'text-slate-500 hover:text-slate-800 dark:hover:text-white' }}">
+                       class="rounded-lg px-4 py-1.5 text-sm font-semibold transition {{ ($filters['type'] ?? '') === (string) $value ? 'bg-white text-brand-700 dark:bg-slate-800 dark:text-brand-300' : 'text-slate-500 hover:text-slate-800 dark:hover:text-white' }}">
                         {{ $label }}
                     </a>
                 @endforeach
