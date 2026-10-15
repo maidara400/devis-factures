@@ -24,7 +24,7 @@ class UserRequest extends FormRequest
                 $creating ? 'required' : 'sometimes', 'email', 'max:255',
                 Rule::unique('users', 'email')->ignore($this->route('user')),
             ],
-            'password' => [$creating ? 'required' : 'sometimes', Password::min(8)->letters()->numbers()],
+            'password' => [$creating ? 'required' : 'nullable', Password::min(8)->letters()->numbers()],
             'role' => [$creating ? 'required' : 'sometimes', Rule::enum(Role::class)],
             'is_active' => ['sometimes', 'boolean'],
         ];
