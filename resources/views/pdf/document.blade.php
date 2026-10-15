@@ -20,7 +20,7 @@
         .client-name { font-size: 13px; font-weight: bold; margin-bottom: 3px; }
         .muted { color: #64748b; line-height: 1.55; }
         .dates { text-align: right; }
-        .dates td { padding: 2px 0; }
+        .dates td { padding: 3px 0 3px 18px; }
         .badge { display: inline-block; padding: 3px 10px; border-radius: 10px; font-size: 8px; font-weight: bold; text-transform: uppercase; letter-spacing: .6px; }
         .badge-draft { background: #f1f5f9; color: #475569; }
         .badge-sent { background: #dbeafe; color: #1d4ed8; }
