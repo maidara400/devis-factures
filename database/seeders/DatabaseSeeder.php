@@ -2,24 +2,40 @@
 
 namespace Database\Seeders;
 
+use App\Enums\Role;
 use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
 {
-    use WithoutModelEvents;
-
-    /**
-     * Seed the application's database.
-     */
     public function run(): void
     {
-        // User::factory(10)->create();
+        // Comptes de démonstration. Mot de passe par défaut "Password123" ; en production,
+        // SEED_PASSWORD doit être défini explicitement pour ne jamais exposer ce défaut public.
+        $password = env('SEED_PASSWORD', 'Password123');
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        if (app()->environment('production') && $password === 'Password123') {
+            throw new \RuntimeException('Définissez SEED_PASSWORD avant de lancer le seeder en production.');
+        }
+
+        $accounts = [
+            ['Administrateur', 'admin@example.com', Role::Admin],
+            ['L. Diasse (évaluateur)', 'ldiasse@groupeisi.com', Role::Admin],
+            ['Marie Gestionnaire', 'manager@example.com', Role::Manager],
+            ['Paul Comptable', 'comptable@example.com', Role::Accountant],
+        ];
+
+        foreach ($accounts as [$name, $email, $role]) {
+            User::updateOrCreate(['email' => $email], [
+                'name' => $name,
+                'password' => $password,
+                'role' => $role,
+                'email_verified_at' => now(),
+            ]);
+        }
+
+        if (! app()->environment('production')) {
+            $this->call(DemoDataSeeder::class);
+        }
     }
 }
