@@ -1,59 +1,168 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Devisio — Gestion de devis et factures
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Application **Laravel 12** de gestion de devis et de factures : clients, catalogue d'articles, génération de **PDF**, workflow de statuts (brouillon → envoyé → payé), **numérotation automatique**, **export CSV**, envoi par e-mail via **file d'attente**, **rôles et permissions**, interface web moderne et **API REST versionnée et documentée (OpenAPI)**.
 
-## About Laravel
+[![CI](https://github.com/maidara400/devis-factures/actions/workflows/ci.yml/badge.svg)](https://github.com/maidara400/devis-factures/actions/workflows/ci.yml)
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Fonctionnalités
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+| Domaine | Détail |
+|---|---|
+| Clients & articles | CRUD, recherche, suppression logique (l'historique des documents est conservé) |
+| Devis & factures | Lignes dynamiques, remise des champs depuis l'article, TVA par ligne, totaux HT / TVA / TTC |
+| Numérotation | `DEV-2026-0001`, `FAC-2026-0001` : séquentielle, sans trou, par type et par année |
+| Statuts | `draft → sent → paid` (pour un devis : « accepté »). Un document envoyé n'est plus modifiable |
+| Conversion | Devis envoyé/accepté → facture brouillon (une seule facture par devis) |
+| PDF | Mise en page soignée générée avec DomPDF (aperçu, téléchargement, pièce jointe d'e-mail) |
+| E-mail | `SendDocumentJob` : génère le PDF, l'envoie au client puis passe le document en « envoyé » |
+| Export CSV | Flux immédiat **ou** export en arrière-plan (`ExportDocumentsCsvJob`), filtrable, compatible Excel |
+| Sécurité | Sanctum (jeton Bearer API) + session web, rate limiting, comptes désactivables, 3 rôles |
+| API | `/api/v1`, ressources JSON, validation, pagination, documentation interactive **`/docs/api`** |
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### Rôles et permissions
 
-## Learning Laravel
+| Permission | Admin | Gestionnaire | Comptable |
+|---|:-:|:-:|:-:|
+| Voir clients / articles / documents | ✅ | ✅ | ✅ |
+| Créer / modifier clients et articles | ✅ | ✅ | ❌ |
+| Créer / modifier / envoyer / convertir documents | ✅ | ✅ | ❌ |
+| Changer le statut (envoyé / payé) | ✅ | ✅ | ✅ |
+| Supprimer un brouillon | ✅ | ✅ | ❌ |
+| Export CSV | ✅ | ✅ | ✅ |
+| Gérer les utilisateurs | ✅ | ❌ | ❌ |
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+Chaque permission est un *Gate* Laravel (`can:documents.manage`, `@can('clients.view')`…), définis à partir de l'enum `App\Enums\Role`.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## Compétences Laravel illustrées
 
-## Laravel Sponsors
+- **Relations Eloquent** : `Client hasMany Document`, `Document hasMany DocumentLine`, `belongsTo` (client, auteur), auto-relation `sourceQuote` / `invoice`, `SoftDeletes`, scopes (`search`, `filter`), casts d'enums.
+- **Transactions DB** : création/mise à jour d'un document (en-tête + lignes + totaux + numéro) atomique ; numérotation avec `SELECT … FOR UPDATE` dans la même transaction (un rollback ne consomme aucun numéro) ; conversion devis → facture avec verrou anti double conversion. Voir `app/Services/`.
+- **Jobs / files d'attente** : `SendDocumentJob` (retries + backoff), `ExportDocumentsCsvJob` (suivi via la table `exports`).
+- **PDF** : `barryvdh/laravel-dompdf`, vue Blade dédiée `resources/views/pdf/document.blade.php`.
+- **Validation** : `FormRequest` partagés entre l'API et l'interface web, règles conditionnelles, messages et attributs en français.
+- **Rôles / permissions** : enums + Gates + middleware `can:`, middleware `active`.
+- **API documentée** : [Scramble](https://scramble.dedoc.co) génère l'OpenAPI depuis le code (FormRequests, Resources, PHPDoc).
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## Installation
 
-### Premium Partners
+Prérequis : PHP ≥ 8.2, Composer, Node ≥ 20 (SQLite par défaut, aucun serveur de base de données à installer).
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+```bash
+git clone https://github.com/maidara400/devis-factures.git
+cd devis-factures
 
-## Contributing
+composer install
+cp .env.example .env
+php artisan key:generate
+touch database/database.sqlite          # Windows : type nul > database\database.sqlite
+php artisan migrate --seed              # schéma + comptes + données de démonstration
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+npm install
+npm run build                           # ou `npm run dev` en développement
+```
 
-## Code of Conduct
+### Lancer l'application
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+```bash
+php artisan serve                       # http://127.0.0.1:8000
+php artisan queue:work                  # worker pour l'envoi d'e-mails et les exports
+```
 
-## Security Vulnerabilities
+> `composer dev` lance tout d'un coup (serveur, worker, Vite), mais utilise `pail` qui nécessite `pcntl` (Linux/macOS/WSL).
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+Les e-mails sont écrits dans `storage/logs/laravel.log` (`MAIL_MAILER=log`). Configurez un vrai SMTP dans `.env` pour les envoyer.
 
-## License
+### Comptes de démonstration
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Mot de passe commun : `Password123` *(à changer hors démonstration — le seeder n'est pas exécuté pour les données en `production`)*
+
+| E-mail | Rôle |
+|---|---|
+| `admin@example.com` | Administrateur |
+| `ldiasse@groupeisi.com` | Administrateur (compte évaluateur) |
+| `manager@example.com` | Gestionnaire |
+| `comptable@example.com` | Comptable |
+
+## Documentation de l'API
+
+- Interface interactive (Stoplight) : **`/docs/api`**
+- Spécification OpenAPI 3.1 : `/docs/api.json` — copie versionnée dans [`docs/openapi.json`](docs/openapi.json) (régénérer : `php artisan scramble:export --path=docs/openapi.json`)
+
+### Exemple rapide
+
+```bash
+# 1. Authentification
+curl -s -X POST http://127.0.0.1:8000/api/v1/auth/login \
+  -H "Accept: application/json" -H "Content-Type: application/json" \
+  -d '{"email":"manager@example.com","password":"Password123"}'
+# → { "token": "1|abc…", "token_type": "Bearer", "user": { … } }
+
+# 2. Créer une facture
+curl -s -X POST http://127.0.0.1:8000/api/v1/documents \
+  -H "Accept: application/json" -H "Authorization: Bearer <token>" -H "Content-Type: application/json" \
+  -d '{
+    "type": "invoice",
+    "client_id": 1,
+    "issue_date": "2026-10-15",
+    "due_date": "2026-11-14",
+    "lines": [
+      {"description": "Audit", "quantity": 2, "unit_price": 100000, "tax_rate": 18}
+    ]
+  }'
+
+# 3. Envoyer le document (job en file d'attente) / télécharger le PDF / exporter
+curl -X POST http://127.0.0.1:8000/api/v1/documents/1/send -H "Authorization: Bearer <token>" -H "Accept: application/json"
+curl -o facture.pdf http://127.0.0.1:8000/api/v1/documents/1/pdf -H "Authorization: Bearer <token>"
+curl -o export.csv "http://127.0.0.1:8000/api/v1/documents-export?type=invoice&status=paid" -H "Authorization: Bearer <token>"
+```
+
+### Principaux endpoints (`/api/v1`)
+
+| Méthode | Route | Description |
+|---|---|---|
+| POST | `/auth/login` · `/auth/logout` · GET `/auth/me` | Authentification par jeton |
+| GET/POST/PUT/DELETE | `/clients`, `/articles` | CRUD (recherche `?search=`) |
+| GET/POST/PUT/DELETE | `/documents` | Liste filtrable (`type`, `status`, `client_id`, `from`, `to`, `search`) |
+| PATCH | `/documents/{id}/status` | Changer le statut (transitions contrôlées) |
+| POST | `/documents/{id}/convert-to-invoice` | Devis → facture |
+| GET | `/documents/{id}/pdf` | PDF |
+| POST | `/documents/{id}/send` | Envoi e-mail asynchrone (202) |
+| GET | `/documents-export` | Export CSV immédiat |
+| POST/GET | `/exports`, `/exports/{id}`, `/exports/{id}/download` | Export CSV en arrière-plan |
+| CRUD | `/users` | Gestion des utilisateurs (admin) |
+
+Codes d'erreur : `401` non authentifié · `403` permission manquante · `422` validation ou règle métier (ex. modifier une facture envoyée) · `429` trop de requêtes.
+
+## Tests
+
+```bash
+php artisan test
+```
+
+43 tests (unitaires et fonctionnels) couvrant l'authentification, les permissions, la numérotation, le rollback transactionnel, les transitions de statut, la conversion, le PDF, les jobs, l'export CSV, l'API et l'interface web.
+
+## Architecture
+
+```
+app/
+├── Enums/            Role, Permission, DocumentType, DocumentStatus
+├── Exceptions/       BusinessRuleException (422 API / message flash web)
+├── Http/
+│   ├── Controllers/Api/V1/   API REST
+│   ├── Controllers/Web/      Interface Blade
+│   ├── Requests/             Validation (partagée API + web)
+│   └── Resources/            Représentations JSON
+├── Jobs/             SendDocumentJob, ExportDocumentsCsvJob
+├── Mail/             DocumentMail (PDF en pièce jointe)
+├── Models/           Client, Article, Document, DocumentLine, NumberSequence, Export, User
+└── Services/         DocumentService (transactions), DocumentNumberGenerator,
+                      DocumentCalculator, DocumentPdfService, DocumentCsvExporter
+```
+
+## Workflow Git
+
+Le dépôt suit un **Git Flow** simplifié : `main` (stable) ← `develop` (intégration) ← `feature/*`. Chaque fonctionnalité est développée sur sa branche avec des commits atomiques ([Conventional Commits](https://www.conventionalcommits.org/)), puis fusionnée dans `develop` (`--no-ff`).
+
+## Licence
+
+MIT
