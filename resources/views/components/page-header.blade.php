@@ -6,7 +6,7 @@
                 <x-icon name="arrow-left" class="size-3.5" /> Retour
             </a>
         @endif
-        <h1 class="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl dark:text-white">{{ $title }}</h1>
+        <h1 class="text-2xl font-semibold tracking-tight text-slate-900 sm:text-3xl dark:text-white">{{ $title }}</h1>
         @if($subtitle)<p class="mt-1 text-sm text-slate-500 dark:text-slate-400">{{ $subtitle }}</p>@endif
     </div>
     <div class="flex flex-wrap items-center gap-2">{{ $slot }}</div>
