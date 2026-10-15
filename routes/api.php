@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\V1\ArticleController;
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\ClientController;
 use App\Http\Controllers\Api\V1\DocumentController;
+use App\Http\Controllers\Api\V1\ExportController;
 use App\Http\Controllers\Api\V1\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -21,6 +22,13 @@ Route::prefix('v1')->group(function () {
 
         Route::apiResource('articles', ArticleController::class)->only(['index', 'show'])->middleware('can:articles.view');
         Route::apiResource('articles', ArticleController::class)->except(['index', 'show'])->middleware('can:articles.manage');
+
+        Route::middleware('can:documents.export')->group(function () {
+            Route::get('documents-export', [ExportController::class, 'stream']);
+            Route::post('exports', [ExportController::class, 'store']);
+            Route::get('exports/{export}', [ExportController::class, 'show']);
+            Route::get('exports/{export}/download', [ExportController::class, 'download']);
+        });
 
         Route::middleware('can:documents.view')->group(function () {
             Route::get('documents', [DocumentController::class, 'index']);
