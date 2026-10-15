@@ -18,7 +18,7 @@
                     @foreach(\App\Enums\Role::cases() as $role)
                         <label class="cursor-pointer">
                             <input type="radio" name="role" value="{{ $role->value }}" class="peer sr-only" @checked(old('role', $user->role?->value ?? 'accountant') === $role->value)>
-                            <div class="rounded-xl border border-slate-200 p-4 text-sm transition peer-checked:border-brand-500 peer-checked:bg-brand-50 peer-checked:ring-4 peer-checked:ring-brand-500/10 dark:border-white/10 dark:peer-checked:bg-brand-500/10">
+                            <div class="rounded-md border border-slate-200 p-4 text-sm transition peer-checked:border-brand-500 peer-checked:bg-brand-50 peer-checked:ring-4 peer-checked:ring-brand-500/10 dark:border-white/10 dark:peer-checked:bg-brand-500/10">
                                 <p class="font-semibold">{{ $role->label() }}</p>
                                 <p class="mt-1 text-xs text-slate-500">{{ count($role->permissions()) }} permissions</p>
                             </div>

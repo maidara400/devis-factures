@@ -15,16 +15,15 @@
     <div class="grid items-start gap-6 lg:grid-cols-3">
         {{-- Aperçu du document --}}
         <div class="card overflow-hidden lg:col-span-2">
-            <div class="relative overflow-hidden bg-gradient-to-br from-brand-600 to-violet-700 px-8 py-7 text-white">
-                <div class="absolute -top-16 -right-10 size-56 rounded-full bg-white/10 blur-2xl"></div>
-                <div class="relative flex flex-wrap items-start justify-between gap-4">
+            <div class="border-b border-slate-200 bg-slate-800 px-8 py-6 text-white">
+                <div class="flex flex-wrap items-start justify-between gap-4">
                     <div>
-                        <p class="text-lg font-bold">{{ config('company.name') }}</p>
-                        <p class="mt-1 text-xs leading-relaxed text-brand-100">{{ config('company.address') }}<br>{{ config('company.email') }} · {{ config('company.phone') }}</p>
+                        <p class="text-lg font-semibold">{{ config('company.name') }}</p>
+                        <p class="mt-1 text-xs leading-relaxed text-slate-300">{{ config('company.address') }}<br>{{ config('company.email') }} · {{ config('company.phone') }}</p>
                     </div>
                     <div class="text-right">
-                        <p class="text-2xl font-bold tracking-widest uppercase">{{ $document->type->label() }}</p>
-                        <p class="text-sm text-brand-100">N° {{ $document->number }}</p>
+                        <p class="text-2xl font-semibold tracking-widest uppercase">{{ $document->type->label() }}</p>
+                        <p class="text-sm text-slate-300">N° {{ $document->number }}</p>
                     </div>
                 </div>
             </div>
@@ -32,7 +31,7 @@
             <div class="grid gap-6 p-8 sm:grid-cols-2">
                 <div>
                     <p class="label">Client</p>
-                    <a href="{{ route('clients.show', $document->client) }}" class="text-base font-bold text-slate-900 hover:underline dark:text-white">{{ $document->client->name }}</a>
+                    <a href="{{ route('clients.show', $document->client) }}" class="text-base font-semibold text-slate-900 hover:underline dark:text-white">{{ $document->client->name }}</a>
                     <p class="mt-1 text-sm leading-relaxed text-slate-500">
                         {{ $document->client->address }}@if($document->client->address)<br>@endif
                         {{ $document->client->city }}@if($document->client->city), @endif{{ $document->client->country }}<br>
@@ -73,9 +72,9 @@
                 <dl class="w-full max-w-xs space-y-2 text-sm">
                     <div class="flex justify-between"><dt class="text-slate-500">Total HT</dt><dd class="font-semibold tabular-nums">{{ Money::format($document->subtotal) }}</dd></div>
                     <div class="flex justify-between"><dt class="text-slate-500">TVA</dt><dd class="font-semibold tabular-nums">{{ Money::format($document->tax_total) }}</dd></div>
-                    <div class="flex items-baseline justify-between rounded-xl bg-brand-50 px-4 py-3 dark:bg-brand-500/10">
+                    <div class="flex items-baseline justify-between rounded-md bg-brand-50 px-4 py-3 dark:bg-brand-500/10">
                         <dt class="font-semibold text-brand-800 dark:text-brand-200">Total TTC</dt>
-                        <dd class="text-xl font-bold text-brand-700 tabular-nums dark:text-brand-200">{{ Money::format($document->total) }}</dd>
+                        <dd class="text-xl font-semibold text-brand-700 tabular-nums dark:text-brand-200">{{ Money::format($document->total) }}</dd>
                     </div>
                 </dl>
             </div>
@@ -94,7 +93,7 @@
                         @php($done = $i <= $currentIndex)
                         <li class="relative flex items-center gap-3">
                             @if(! $loop->last)<span class="absolute top-8 left-4 h-5 w-px {{ $i < $currentIndex ? 'bg-brand-500' : 'bg-slate-200 dark:bg-white/10' }}"></span>@endif
-                            <span class="grid size-8 place-items-center rounded-full text-xs font-bold {{ $done ? 'bg-gradient-to-br from-brand-500 to-brand-700 text-white shadow-glow' : 'bg-slate-100 text-slate-400 dark:bg-white/5' }}">
+                            <span class="grid size-8 place-items-center rounded-full text-xs font-semibold {{ $done ? 'bg-brand-600 text-white' : 'bg-slate-100 text-slate-400' }}">
                                 @if($done)<x-icon name="check" class="size-4" />@else {{ $i + 1 }} @endif
                             </span>
                             <span class="text-sm {{ $done ? 'font-semibold text-slate-900 dark:text-white' : 'text-slate-400' }}">
@@ -116,7 +115,7 @@
                             <button class="btn-primary w-full"><x-icon name="send" class="size-4" /> Marquer comme envoyé</button></form>
                     @elseif($document->status === DocumentStatus::Sent)
                         <form method="POST" action="{{ route('documents.status', $document) }}">@csrf @method('PATCH')<input type="hidden" name="status" value="paid">
-                            <button class="btn-primary w-full !from-emerald-500 !to-emerald-700"><x-icon name="check" class="size-4" /> Marquer {{ $isQuote ? 'accepté' : 'payé' }}</button></form>
+                            <button class="btn-success w-full"><x-icon name="check" class="size-4" /> Marquer {{ $isQuote ? 'accepté' : 'payé' }}</button></form>
                         <form method="POST" action="{{ route('documents.status', $document) }}">@csrf @method('PATCH')<input type="hidden" name="status" value="draft">
                             <button class="btn-secondary w-full">Repasser en brouillon</button></form>
                     @endif

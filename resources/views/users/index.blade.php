@@ -12,7 +12,7 @@
                         <tr class="tr-hover">
                             <td class="td">
                                 <div class="flex items-center gap-3">
-                                    <span class="grid size-10 place-items-center rounded-full bg-gradient-to-br from-brand-400 to-fuchsia-500 text-sm font-bold text-white">{{ mb_strtoupper(mb_substr($u->name, 0, 1)) }}</span>
+                                    <span class="grid size-10 place-items-center rounded-full bg-slate-200 text-sm font-semibold text-slate-700">{{ mb_strtoupper(mb_substr($u->name, 0, 1)) }}</span>
                                     <div><p class="font-semibold text-slate-900 dark:text-white">{{ $u->name }}@if($u->is(auth()->user())) <span class="text-xs font-normal text-slate-400">(vous)</span>@endif</p><p class="text-xs text-slate-500">{{ $u->email }}</p></div>
                                 </div>
                             </td>

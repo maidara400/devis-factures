@@ -29,7 +29,7 @@
                             <tr class="tr-hover">
                                 <td class="td">
                                     <a href="{{ route('clients.show', $client) }}" class="flex items-center gap-3">
-                                        <span class="grid size-10 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-brand-100 to-fuchsia-100 text-sm font-bold text-brand-700 dark:from-brand-500/20 dark:to-fuchsia-500/20 dark:text-brand-200">{{ mb_strtoupper(mb_substr($client->name, 0, 2)) }}</span>
+                                        <span class="grid size-10 shrink-0 place-items-center rounded-md bg-brand-50 text-sm font-semibold text-brand-700">{{ mb_strtoupper(mb_substr($client->name, 0, 2)) }}</span>
                                         <span class="font-semibold text-slate-900 dark:text-white">{{ $client->name }}</span>
                                     </a>
                                 </td>

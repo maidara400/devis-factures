@@ -7,12 +7,12 @@
         @page { margin: 0; }
         * { box-sizing: border-box; }
         body { font-family: DejaVu Sans, sans-serif; font-size: 10px; color: #1e293b; margin: 0; }
-        .band { background: #4f46e5; color: #fff; padding: 28px 40px 22px; }
+        .band { background: #1e293b; color: #fff; padding: 28px 40px 22px; }
         .band table { width: 100%; }
         .brand { font-size: 18px; font-weight: bold; letter-spacing: .3px; }
-        .brand-sub { font-size: 9px; color: #c7d2fe; margin-top: 4px; line-height: 1.5; }
+        .brand-sub { font-size: 9px; color: #cbd5e1; margin-top: 4px; line-height: 1.5; }
         .doc-type { font-size: 26px; font-weight: bold; text-align: right; letter-spacing: 2px; text-transform: uppercase; }
-        .doc-number { text-align: right; font-size: 12px; color: #c7d2fe; margin-top: 4px; }
+        .doc-number { text-align: right; font-size: 12px; color: #cbd5e1; margin-top: 4px; }
         .content { padding: 28px 40px; }
         .meta { width: 100%; margin-bottom: 26px; }
         .meta td { vertical-align: top; width: 50%; }
@@ -31,8 +31,8 @@
         .r { text-align: right; }
         .totals { width: 45%; margin-left: 55%; margin-top: 18px; border-collapse: collapse; }
         .totals td { padding: 6px 10px; }
-        .totals .grand td { background: #4f46e5; color: #fff; font-size: 12px; font-weight: bold; }
-        .notes { margin-top: 28px; padding: 12px 14px; background: #f8fafc; border-left: 3px solid #4f46e5; }
+        .totals .grand td { background: #1e293b; color: #fff; font-size: 12px; font-weight: bold; }
+        .notes { margin-top: 28px; padding: 12px 14px; background: #f8fafc; border-left: 3px solid #1e293b; }
         .footer { position: fixed; bottom: 0; left: 0; right: 0; padding: 14px 40px; border-top: 1px solid #e2e8f0; color: #94a3b8; font-size: 8px; text-align: center; }
     </style>
 </head>
