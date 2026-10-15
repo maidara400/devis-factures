@@ -25,6 +25,7 @@ class ClientController extends Controller
     public function index(Request $request): AnonymousResourceCollection
     {
         $clients = Client::query()
+            ->withCount('documents')
             ->search($request->query('search'))
             ->orderBy('name')
             ->paginate(15)
@@ -48,7 +49,7 @@ class ClientController extends Controller
      */
     public function show(Client $client): ClientResource
     {
-        return new ClientResource($client);
+        return new ClientResource($client->loadCount('documents'));
     }
 
     /**
